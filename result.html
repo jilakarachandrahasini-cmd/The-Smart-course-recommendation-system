@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Recommendation Results</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Segoe UI',sans-serif;
+        }
+
+        body{
+            background:#0f172a;
+            color:white;
+            min-height:100vh;
+            padding:20px;
+            transition:0.4s;
+        }
+
+        body.light{
+            background:#f4f4f4;
+            color:#222;
+        }
+
+        .container{
+            width:90%;
+            max-width:1200px;
+            margin:auto;
+        }
+
+        .header{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:20px;
+        }
+
+        .theme-btn{
+            padding:10px 15px;
+            border:none;
+            border-radius:8px;
+            cursor:pointer;
+            background:#38bdf8;
+            color:white;
+        }
+
+        .card{
+            background:rgba(255,255,255,0.08);
+            padding:20px;
+            border-radius:15px;
+            margin-bottom:20px;
+        }
+
+        .dashboard{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+            gap:15px;
+        }
+
+        .info-box{
+            background:white;
+            color:black;
+            padding:15px;
+            border-radius:12px;
+        }
+
+        .progress{
+            width:100%;
+            background:#ddd;
+            border-radius:30px;
+            overflow:hidden;
+            margin-top:10px;
+        }
+
+        .progress-bar{
+            height:25px;
+            background:#38bdf8;
+            text-align:center;
+            color:white;
+            line-height:25px;
+            font-weight:bold;
+        }
+
+        .search-box{
+            width:100%;
+            padding:12px;
+            border:none;
+            border-radius:10px;
+            margin-bottom:20px;
+        }
+
+        .course-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+            gap:20px;
+        }
+
+        .course-card{
+            background:white;
+            color:black;
+            padding:20px;
+            border-radius:15px;
+        }
+
+        .course-card h3{
+            color:#0ea5e9;
+            margin-bottom:10px;
+        }
+
+        .tag{
+            display:inline-block;
+            background:#38bdf8;
+            color:white;
+            padding:5px 10px;
+            border-radius:20px;
+            margin-top:10px;
+        }
+
+        ul{
+            margin-left:20px;
+            margin-top:10px;
+        }
+
+        .future{
+            background:#fee2e2;
+            color:#991b1b;
+            padding:15px;
+            border-radius:10px;
+            margin-bottom:10px;
+        }
+
+        .back-btn{
+            display:inline-block;
+            text-decoration:none;
+            background:#38bdf8;
+            color:white;
+            padding:12px 20px;
+            border-radius:10px;
+            margin-top:20px;
+        }
+
+        .chatbot{
+            position:fixed;
+            bottom:20px;
+            right:20px;
+            width:280px;
+            background:white;
+            color:black;
+            border-radius:15px;
+            padding:15px;
+            box-shadow:0 0 15px rgba(0,0,0,0.3);
+        }
+
+        .chatbot h4{
+            margin-bottom:10px;
+        }
+
+        .chatbot input{
+            width:100%;
+            padding:8px;
+            margin-top:10px;
+        }
+
+        .chatbot button{
+            margin-top:10px;
+            width:100%;
+            padding:8px;
+            border:none;
+            background:#38bdf8;
+            color:white;
+            border-radius:8px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+
+        <h1>🎓 Smart Course Recommendations</h1>
+
+        <button
+            class="theme-btn"
+            onclick="toggleTheme()">
+            🌙 Theme
+        </button>
+
+    </div>
+
+    <!-- Dashboard -->
+
+    <div class="card">
+
+        <h2>📊 Student Dashboard</h2>
+
+        <div class="dashboard">
+
+            <div class="info-box">
+                <strong>Name:</strong><br>
+                {{ name }}
+            </div>
+
+            <div class="info-box">
+                <strong>Email:</strong><br>
+                {{ email }}
+            </div>
+
+            <div class="info-box">
+                <strong>GPA:</strong><br>
+                {{ gpa }}
+            </div>
+
+            <div class="info-box">
+                <strong>Interests:</strong><br>
+                {{ interests|join(', ') }}
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Confidence -->
+
+    <div class="card">
+
+        <h2>🤖 Confidence Score</h2>
+
+        <div class="progress">
+
+            <div
+                class="progress-bar"
+                style="width:{{ confidence }}%;">
+
+                {{ confidence }}%
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Search -->
+
+    <input
+        type="text"
+        id="searchBox"
+        class="search-box"
+        placeholder="🔍 Search Courses..."
+        onkeyup="searchCourses()"
+    >
+
+    <!-- Courses -->
+
+    <div class="card">
+
+        <h2>🚀 Recommended Courses</h2>
+
+        <div class="course-grid">
+
+            {% for course in courses %}
+
+            <div class="course-card course-item">
+
+                <h3>{{ course.name }}</h3>
+
+                <p>
+                    <strong>Description:</strong>
+                    {{ course.description }}
+                </p>
+
+                <span class="tag">
+                    {{ course.difficulty }}
+                </span>
+
+                <p style="margin-top:10px;">
+                    <strong>Career:</strong>
+                    {{ course.career }}
+                </p>
+
+                <h4 style="margin-top:15px;">
+                    📚 Learning Roadmap
+                </h4>
+
+                <ul>
+
+                    {% for step in course.roadmap %}
+
+                    <li>{{ step }}</li>
+
+                    {% endfor %}
+
+                </ul>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <!-- Low GPA Suggestions -->
+
+    {% if future_courses %}
+
+    <div class="card">
+
+        <h2>📈 Courses Available After GPA Improvement</h2>
+
+        {% for course in future_courses %}
+
+        <div class="future">
+
+            🔒 {{ course.name }}
+
+            <br>
+
+            Required GPA:
+            {{ course.required }}
+
+            <br>
+
+            Increase GPA by
+            {{ course.gap }}
+
+            points
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% endif %}
+
+    <!-- Explanations -->
+
+    <div class="card">
+
+        <h2>🧠 AI Explanations</h2>
+
+        <ul>
+
+            {% for exp in explanations %}
+
+            <li>{{ exp }}</li>
+
+            {% endfor %}
+
+        </ul>
+
+    </div>
+
+    <a href="/" class="back-btn">
+        ⬅ Back to Login
+    </a>
+
+</div>
+
+<script>
+
+function toggleTheme(){
+    document.body.classList.toggle("light");
+}
+
+function searchCourses(){
+
+    let input =
+    document.getElementById("searchBox")
+    .value
+    .toLowerCase();
+
+    let cards =
+    document.querySelectorAll(".course-item");
+
+    cards.forEach(card=>{
+
+        let text =
+        card.innerText.toLowerCase();
+
+        card.style.display =
+        text.includes(input)
+        ? "block"
+        : "none";
+
+    });
+}
+</script>
+
+</body>
+</html>

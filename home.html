@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Smart Course Recommendation System</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Segoe UI',sans-serif;
+        }
+
+        body{
+            min-height:100vh;
+            background:linear-gradient(135deg,#0f172a,#1e293b);
+            color:white;
+            transition:0.4s;
+        }
+
+        body.light{
+            background:#f4f6f9;
+            color:#222;
+        }
+
+        .navbar{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:20px 50px;
+            background:rgba(255,255,255,0.08);
+            backdrop-filter:blur(10px);
+        }
+
+        .navbar h2{
+            color:#38bdf8;
+        }
+
+        .theme-btn{
+            padding:10px 15px;
+            border:none;
+            border-radius:8px;
+            cursor:pointer;
+            background:#38bdf8;
+            color:white;
+            font-weight:bold;
+        }
+
+        .container{
+            width:90%;
+            max-width:1000px;
+            margin:auto;
+            padding:30px;
+        }
+
+        .welcome-card{
+            background:rgba(255,255,255,0.08);
+            backdrop-filter:blur(10px);
+            border-radius:20px;
+            padding:30px;
+            text-align:center;
+            margin-bottom:25px;
+        }
+
+        .welcome-card h1{
+            color:#38bdf8;
+            margin-bottom:10px;
+        }
+
+        .search-box{
+            width:100%;
+            padding:12px;
+            border:none;
+            border-radius:10px;
+            margin-bottom:20px;
+            font-size:16px;
+        }
+
+        .form-card{
+            background:rgba(255,255,255,0.08);
+            backdrop-filter:blur(10px);
+            border-radius:20px;
+            padding:30px;
+        }
+
+        .gpa-input{
+            width:100%;
+            padding:12px;
+            border:none;
+            border-radius:10px;
+            margin-top:10px;
+            margin-bottom:25px;
+            font-size:16px;
+        }
+
+        .interest-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+            gap:20px;
+        }
+
+        .interest-card{
+            background:white;
+            color:black;
+            border-radius:15px;
+            padding:20px;
+            cursor:pointer;
+            transition:0.3s;
+        }
+
+        .interest-card:hover{
+            transform:translateY(-5px);
+        }
+
+        .interest-card span{
+            font-size:35px;
+            display:block;
+            margin-bottom:10px;
+        }
+
+        .interest-card input{
+            margin-right:8px;
+        }
+
+        .submit-btn{
+            width:100%;
+            padding:15px;
+            margin-top:25px;
+            border:none;
+            border-radius:10px;
+            background:#38bdf8;
+            color:white;
+            font-size:18px;
+            font-weight:bold;
+            cursor:pointer;
+        }
+
+        .submit-btn:hover{
+            opacity:0.9;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <h2>🎓 Smart Course Recommendation</h2>
+
+        <button class="theme-btn" onclick="toggleTheme()">
+            🌙 Theme
+        </button>
+    </div>
+
+    <div class="container">
+
+        <div class="welcome-card">
+
+            <h1>Welcome {{ username }}</h1>
+
+            <p>
+                Discover courses that match your interests and GPA.
+            </p>
+
+        </div>
+
+        <input
+            type="text"
+            id="searchBox"
+            class="search-box"
+            placeholder="🔍 Search interests..."
+            onkeyup="searchCards()"
+        >
+
+        <div class="form-card">
+
+            <form action="/recommend" method="POST">
+
+                <input
+                    type="hidden"
+                    name="name"
+                    value="{{ username }}"
+                >
+
+                <input
+                    type="hidden"
+                    name="email"
+                    value="{{ email }}"
+                >
+
+                <label>
+                    <h3>📊 Enter Your GPA</h3>
+                </label>
+
+                <input
+                    type="number"
+                    step="0.1"
+                    name="gpa"
+                    class="gpa-input"
+                    placeholder="Example: 8.5"
+                    required
+                >
+
+                <h3 style="margin-bottom:20px;">
+                    🚀 Select Your Interests
+                </h3>
+
+                <div class="interest-grid">
+
+                    <label class="interest-card">
+                        <span>🤖</span>
+                        <input type="checkbox" name="interest" value="ai">
+                        Artificial Intelligence
+                    </label>
+
+                    <label class="interest-card">
+                        <span>📊</span>
+                        <input type="checkbox" name="interest" value="data">
+                        Data Science
+                    </label>
+
+                    <label class="interest-card">
+                        <span>🔐</span>
+                        <input type="checkbox" name="interest" value="security">
+                        Cyber Security
+                    </label>
+
+                    <label class="interest-card">
+                        <span>☁️</span>
+                        <input type="checkbox" name="interest" value="cloud">
+                        Cloud Computing
+                    </label>
+
+                    <label class="interest-card">
+                        <span>💻</span>
+                        <input type="checkbox" name="interest" value="development">
+                        Web Development
+                    </label>
+
+                    <label class="interest-card">
+                        <span>🧪</span>
+                        <input type="checkbox" name="interest" value="testing">
+                        Software Testing
+                    </label>
+
+                    <label class="interest-card">
+                        <span>⛓️</span>
+                        <input type="checkbox" name="interest" value="emerging">
+                        Blockchain
+                    </label>
+
+                    <label class="interest-card">
+                        <span>📡</span>
+                        <input type="checkbox" name="interest" value="emerging">
+                        Internet of Things
+                    </label>
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="submit-btn"
+                >
+                    🔍 Get Recommendations
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        function toggleTheme(){
+            document.body.classList.toggle("light");
+        }
+
+        function searchCards(){
+
+            let input =
+            document.getElementById("searchBox")
+            .value
+            .toLowerCase();
+
+            let cards =
+            document.querySelectorAll(".interest-card");
+
+            cards.forEach(card=>{
+
+                let text =
+                card.innerText.toLowerCase();
+
+                if(text.includes(input)){
+                    card.style.display="block";
+                }
+                else{
+                    card.style.display="none";
+                }
+
+            });
+
+        }
+
+    </script>
+
+</body>
+</html>
